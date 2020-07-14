@@ -44,7 +44,7 @@ function DB_POOL.get_db_mongo_cli(host, port, timeout)
         db = conn:new_db_handle("admin")
         if nil == db then
             ngx.log(ngx.ERR, "get_db_mongo_cli() MongoDB new_db_handle failed 01.\n")
-            _M.close_db_mongo_cli()
+            DB_POOL.close_db_mongo_cli()
             return nil, '### get_db_mongo_col() MongoDB new_db_handle failed 01. ###'
         end
 
@@ -52,7 +52,7 @@ function DB_POOL.get_db_mongo_cli(host, port, timeout)
         local ok, err = db:auth_scram_sha1(conf.myconf_db_username, conf.myconf_db_passwd)
         if ok ~= 1 then
             ngx.log(ngx.ERR, "get_db_mongo_cli() MongoDB user auth failed, err=", err, ".\n")
-            _M.close_db_mongo_cli()
+            DB_POOL.close_db_mongo_cli()
             return nil, '### get_db_mongo_col() MongoDB auth_scram_sha1 failed: '..err.." ###"
         else
             ngx.log(ngx.ERR, "get_db_mongo_cli() user auth success, ok=", ok, "\n")
@@ -75,7 +75,7 @@ function DB_POOL.get_db_mongo_col(colname)
     local db = conn:new_db_handle(conf.myconf_db_database)
     if nil == db then
         ngx.log(ngx.ERR, "get_db_mongo_col() swith to ", conf.myconf_das_database, " failed.\n")
-        _M.close_db_mongo_cli()
+        DB_POOL.close_db_mongo_cli()
         return nil, '### get_db_mongo_col() MongoDB new_db_handle failed 01. ###'
     end
 
