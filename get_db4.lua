@@ -85,12 +85,12 @@ function DB_POOL.get_db_mongo_col(colname)
 end
 
 function DB_POOL.close_db_mongo_cli(keepalive_time)
-    local keepalive_time = keepalive_time
+    local keepaliveTime = keepalive_time or conf.myconf_mongo_keepalive
     local pool_size = conf.myconf_mongo_poolsize
     if ngx.ctx.db_mongo_cli then
-        ngx.log(ngx.ERR, "close_db_mongo_cli() set_keepalive keepalive_time=", keepalive_time, ".\n")
+        ngx.log(ngx.ERR, "close_db_mongo_cli() set_keepalive keepalive_time=", keepaliveTime, ".\n")
         -- no need to manually call the close method on it afterwards.
-        ngx.ctx.db_mongo_cli:set_keepalive(keepalive_time, pool_size)
+        ngx.ctx.db_mongo_cli:set_keepalive(keepaliveTime, pool_size)
         ngx.ctx.db_mongo_cli = nil
     end
 end

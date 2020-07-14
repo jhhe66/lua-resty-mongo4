@@ -6,6 +6,7 @@ _M._VERSION = '1.0' -- 模块版本
 
 -- TODO:JHHE mongodb4.2 参数
 _M.myconf_mongo_timeout = 10000 -- 10秒
+_M.myconf_mongo_keepalive = 5000 -- 5秒
 _M.myconf_mongo_poolsize = 10
 
 -- DB
