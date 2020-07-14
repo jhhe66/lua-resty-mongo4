@@ -14,7 +14,7 @@ function DB_POOL.get_db_mongo_cli(host, port, timeout)
     local host = host or conf.myconf_mongo_ip
     local port = port or conf.myconf_mongo_port
     local timeout = timeout or conf.myconf_mongo_timeout
-    if ngx.ctx.db_mongo_cli then
+    if ngx.ctx.db_mongo_cli then -- 同一次HTTP请求，该值是一样的；不同的HTTP请求该值不一样。
         return ngx.ctx.db_mongo_cli
     end
 
@@ -44,7 +44,8 @@ function DB_POOL.get_db_mongo_cli(host, port, timeout)
         db = conn:new_db_handle("admin")
         if nil == db then
             ngx.log(ngx.ERR, "get_db_mongo_cli() MongoDB new_db_handle failed 01.\n")
-            DB_POOL.close_db_mongo_cli()
+            -- DB_POOL.close_db_mongo_cli()
+            conn:close()    -- 关闭此socket连接
             return nil, '### get_db_mongo_col() MongoDB new_db_handle failed 01. ###'
         end
 
@@ -52,7 +53,8 @@ function DB_POOL.get_db_mongo_cli(host, port, timeout)
         local ok, err = db:auth_scram_sha1(conf.myconf_db_username, conf.myconf_db_passwd)
         if ok ~= 1 then
             ngx.log(ngx.ERR, "get_db_mongo_cli() MongoDB user auth failed, err=", err, ".\n")
-            DB_POOL.close_db_mongo_cli()
+            -- DB_POOL.close_db_mongo_cli()
+            conn:close()    -- 关闭此socket连接
             return nil, '### get_db_mongo_col() MongoDB auth_scram_sha1 failed: '..err.." ###"
         else
             ngx.log(ngx.ERR, "get_db_mongo_cli() user auth success, ok=", ok, "\n")
@@ -75,7 +77,8 @@ function DB_POOL.get_db_mongo_col(colname)
     local db = conn:new_db_handle(conf.myconf_db_database)
     if nil == db then
         ngx.log(ngx.ERR, "get_db_mongo_col() swith to ", conf.myconf_das_database, " failed.\n")
-        DB_POOL.close_db_mongo_cli()
+        -- DB_POOL.close_db_mongo_cli() -- 会导致泄露
+        conn:close()    -- 关闭此socket连接
         return nil, '### get_db_mongo_col() MongoDB new_db_handle failed 01. ###'
     end
 
@@ -90,7 +93,7 @@ function DB_POOL.close_db_mongo_cli(keepalive_time)
     if ngx.ctx.db_mongo_cli then
         ngx.log(ngx.ERR, "close_db_mongo_cli() set_keepalive keepalive_time=", keepaliveTime, ".\n")
         -- no need to manually call the close method on it afterwards.
-        ngx.ctx.db_mongo_cli:set_keepalive(keepaliveTime, pool_size)
+        ngx.ctx.db_mongo_cli:set_keepalive(keepaliveTime, pool_size) -- 放入连接池, keepaliveTime=0（长连接）
         ngx.ctx.db_mongo_cli = nil
     end
 end
