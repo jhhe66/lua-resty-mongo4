@@ -27,7 +27,7 @@ function DB_POOL.get_db_mongo_cli(host, port, timeout)
 
     -- config the ngx.socket.tcp/cosocket built-in connection pool
     -- https://github.com/openresty/lua-nginx-module#ngxsockettcp
-    local pool = conf.myconf_ums_username ..":"..conf.myconf_ums_database..":"..conf.myconf_mongo4ums_ip..":"..conf.myconf_mongo4ums_port
+    local pool = conf.myconf_db_username ..":"..conf.myconf_db_database..":"..conf.myconf_mongo_ip..":"..conf.myconf_mongo_port
     local pool_size = conf.myconf_mongo_poolsize
     local backlog = 0
     local pool_opts = {
@@ -49,7 +49,7 @@ function DB_POOL.get_db_mongo_cli(host, port, timeout)
         end
 
         --用户授权
-        local ok, err = db:auth_scram_sha1(conf.myconf_ums_username, conf.myconf_ums_passwd)
+        local ok, err = db:auth_scram_sha1(conf.myconf_db_username, conf.myconf_db_passwd)
         if ok ~= 1 then
             ngx.log(ngx.ERR, "get_db_mongo_cli() MongoDB user auth failed, err=", err, ".\n")
             _M.close_db_mongo_cli()
@@ -72,7 +72,7 @@ function DB_POOL.get_db_mongo_col(colname)
     end
 
     -- 切换数据库
-    local db = conn:new_db_handle(conf.myconf_ums_database)
+    local db = conn:new_db_handle(conf.myconf_db_database)
     if nil == db then
         ngx.log(ngx.ERR, "get_db_mongo_col() swith to ", conf.myconf_das_database, " failed.\n")
         _M.close_db_mongo_cli()
