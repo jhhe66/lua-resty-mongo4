@@ -8,7 +8,7 @@ lua-resty-mongo4是针对mongodb4.2副本集集群使用的，解决count统计�
 --------------------
 如果对你有帮助，可以做个捐助，更有动力研究下去。
 
-![捐助](images/juanzhu.png)
+![捐助](./images/juanzhu.png)
 
 Name
 ======
