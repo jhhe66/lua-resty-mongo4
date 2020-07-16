@@ -10,6 +10,9 @@ lua-resty-mongo4是针对mongodb4.2副本集集群使用的，解决count统计�
 
 ![捐助](./images/juanzhu.png)
 
+
+![打赏](https://images.cnblogs.com/cnblogs_com/jhhe66/1805884/o_200714034858a6x00687szct8nxfzggpcf0(1).png)
+
 Name
 ======
 lua-resty-mongol - Lua Mongodb driver for ngx_lua base on the cosocket API
